@@ -1,0 +1,122 @@
+.alive, .newborn, .dead {
+  border: 1px solid black;
+  display: inline-block;
+  height: 10px;
+  margin: 0;
+  width: 10px;
+}
+
+body {
+  background: #bb4444;
+  background: -moz-radial-gradient(center, ellipse cover, #bb4444 0%, #181818 83%);
+  background: -webkit-radial-gradient(center, ellipse cover, #bb4444 0%, #181818 83%);
+  background: radial-gradient(ellipse at center, #bb4444 0%, #181818 83%);
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bb4444', endColorstr='#181818',GradientType=1 );
+  font-size: 16px;
+  font-family: Calibri;
+  padding-bottom: 20px;
+}
+
+h1 {
+  text-align: center;
+  color: #ddd;
+}
+h1 a {
+  color: #bbf;
+  text-decoration: none;
+}
+h1 a:hover {
+  color: #99d;
+}
+
+.alive {
+  background-color: red;
+}
+
+.newborn {
+  background-color: pink;
+}
+
+.dead {
+  background-color: #303030;
+}
+
+.grid {
+  border: 12px solid #644;
+  border-radius: 6px;
+  font-size: 0;
+  margin: auto;
+  width: 840px;
+  -webkit-box-shadow: 0px 0px 40px 10px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 0px 40px 10px rgba(0, 0, 0, 0.75);
+  box-shadow: 0px 0px 40px 10px rgba(0, 0, 0, 0.75);
+}
+
+.interface {
+  background-color: #644;
+  margin: auto;
+  width: 560px;
+  position: relative;
+  z-index: 1;
+}
+.interface h2 {
+  color: #a88;
+  display: inline;
+  margin-left: 16px;
+}
+.interface button {
+  background-color: #303030;
+  border: 2px solid #a88;
+  color: #a88;
+  font-size: 20px;
+  margin: 10px 0 10px 16px;
+  width: 100px;
+}
+.interface:first-of-type {
+  border-top-left-radius: 6px;
+  border-top-right-radius: 6px;
+  -webkit-box-shadow: 0px -10px 15px 5px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px -15px 15px 5px rgba(0, 0, 0, 0.75);
+  box-shadow: 10px -7px 15px 0px rgba(0, 0, 0, 0.4), -10px -7px 15px 0px rgba(0, 0, 0, 0.4);
+}
+.interface:last-of-type {
+  border-bottom-left-radius: 6px;
+  border-bottom-right-radius: 6px;
+  -webkit-box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.75);
+  -moz-box-shadow: 0px 10px 15px 0px rgba(0, 0, 0, 0.75);
+  box-shadow: 10px 7px 15px 0px rgba(0, 0, 0, 0.4), -10px 7px 15px 0px rgba(0, 0, 0, 0.4);
+  width: 460px;
+}
+
+@media only screen and (max-device-width: 1024px) and (orientation: portrait) {
+  body {
+    height: 90vh;
+    font-size: 20px;
+    background-attachment: fixed;
+    background-position: center center;
+    background-repeat: no-repeat;
+    background-size: cover;
+  }
+
+  #app {
+    position: relative;
+    top: 50%;
+    -webkit-transform: translateY(-50%);
+    -ms-transform: translateY(-50%);
+    transform: translateY(-50%);
+  }
+
+  .interface {
+    width: 780px;
+  }
+  .interface h2 {
+    font-size: 40px;
+  }
+  .interface button {
+    font-size: 35px;
+    width: 140px;
+  }
+  .interface:last-of-type {
+    width: 630px;
+  }
+}

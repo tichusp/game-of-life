@@ -1,0 +1,214 @@
+(function() {
+	var initialGrid = [],
+		width = 70,
+		height = 50;
+	//grid initialization...0 sumbolizes dead cells, 1 newborn cells, and 2 alive cells that are at least 2 generations old
+	for (let i = 0; i < height; i++) {
+		initialGrid[i] = [];
+		for (let j = 0; j < width; j++) {
+			initialGrid[i][j] = Math.random() > 0.85 ? 2 : 0;
+		}
+	}
+
+	var App = React.createClass({
+
+		getInitialState: function() {
+			return {
+				generation: 0,
+				grid: initialGrid,
+				isGameRunning: true,
+			};	
+		},
+
+		componentDidMount: function() {
+			this.speed = 150;
+			this.interval = setInterval(this.nextGeneration, this.speed); 
+		},
+
+		findAliveNeighbors: function(x, y) {
+			var aliveCount = 0;
+			for (var i = x - 1; i < x + 2; i++) {
+				for (var j = y - 1; j < y + 2; j++) {
+					if (i !== x || j !== y) {
+						let indexx = i < 0 ? height - 1 : (i > height - 1 ? 0 : i);
+						let indexy = j < 0 ? width - 1 : (j > width - 1 ? 0 : j);
+						if (this.state.grid[indexx][indexy] !== 0) {
+							aliveCount++;
+						}
+					}
+				}
+			}
+			return aliveCount;
+		},
+
+		nextGeneration: function() {
+			var newGrid = this.state.grid.map((val, index) => {
+				return val.map((innerVal, innerIndex) => {
+					var aliveNeighbors = this.findAliveNeighbors(index, innerIndex);
+					if (innerVal === 0) {
+						return aliveNeighbors === 3 ? 1 : 0;
+					} else {
+						return aliveNeighbors < 4 && aliveNeighbors > 1 ? 2 : 0;
+					}
+				});
+			});
+			this.setState({
+				generation: this.state.generation + 1,
+				grid: newGrid
+			});
+		},
+
+		clear: function() {
+			var newGrid = this.state.grid.map((val) => val.map(() => 0));
+			clearInterval(this.interval);
+			this.setState({
+				generation: 0,
+				grid: newGrid,
+				isGameRunning: false
+			});	
+		},
+
+		togglePause: function() {
+			if (this.state.isGameRunning) {
+				clearInterval(this.interval);
+				this.setState({
+					isGameRunning: false
+				});
+			} else {
+				this.interval = setInterval(this.nextGeneration, this.speed);
+				this.setState({
+					isGameRunning: true
+				});
+			}
+		},
+
+		handleCellClick: function(x, y) {
+			this.state.grid[x][y] = this.state.grid[x][y] === 0 ? 2 : 0;
+			this.forceUpdate();
+		},
+
+		restart: function() {
+			var newGrid = [];
+			for (let i = 0; i < height; i++) {
+				newGrid[i] = [];
+				for (let j = 0; j < width; j++) {
+					newGrid[i][j] = Math.random() > 0.85 ? 2 : 0;
+				}
+			}
+			clearInterval(this.interval);
+			this.setState({			
+				generation: 0,
+				grid: newGrid,
+				isGameRunning: true
+			});
+			this.interval = setInterval(this.nextGeneration, this.speed)
+		},
+
+		changeSpeed: function(newSpeed) {
+			this.speed = newSpeed;
+			if (this.state.isGameRunning) {
+				clearInterval(this.interval);
+				this.interval = setInterval(this.nextGeneration, this.speed);
+			} 
+		},
+
+		render: function() {
+			return(
+				<div>
+					<Header />
+					<UpperInterface 
+						clear={this.clear}
+						generation={this.state.generation}
+						isGameRunning={this.state.isGameRunning}
+						togglePause={this.togglePause}
+						restart={this.restart}
+						/>
+					<Grid
+						handleCellClick={this.handleCellClick}
+						grid={this.state.grid}/>
+					<LowerInterface changeSpeed={this.changeSpeed}/>
+				</div>
+			);
+		}
+	});
+
+	function Header() {
+		return (
+			<h1>
+				ReactJS implementation of <a href="https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life">John Conway's Game of Life</a>
+			</h1>
+		);
+	}
+
+	function UpperInterface(props) {
+		return (
+			<div className="interface">
+				<button onClick={props.togglePause}>
+					{props.isGameRunning ? "Pause" : "Run"}
+				</button>
+				<button onClick={props.clear}>
+					Clear
+				</button>
+				<button onClick={props.restart}>
+					Restart
+				</button>
+				<h2>
+					Generation: {props.generation}
+				</h2>
+			</div>
+		);	
+	}
+
+	function Grid(props) {
+		return (
+			<div className="grid">
+				{props.grid.map((val, index) => {
+					return val.map((innerVal, innerIndex) => {
+						return (
+							<Cell
+								x={index}
+								y={innerIndex}
+								onClick={props.handleCellClick}
+								status={innerVal}
+								/>
+						);
+					});
+				})}
+			</div>
+		);
+	}
+
+	function Cell(props) {
+		var cellClass = props.status === 2 ? "alive" : (props.status === 1 ? "newborn" : "dead");
+		return (
+			<div 
+				className={cellClass}
+				onClick={props.onClick.bind(null, props.x, props.y)}
+				/>
+		);
+	}
+
+	function LowerInterface(props) {
+		return (
+			<div className="interface">
+				<h2>
+					Speed : 
+				</h2>
+				<button onClick={props.changeSpeed.bind(null, 300)}>
+					Slow
+				</button>
+				<button onClick={props.changeSpeed.bind(null, 150)}>
+					Default
+				</button>
+				<button onClick={props.changeSpeed.bind(null, 75)}>
+					Fast
+				</button>
+			</div>
+		);
+	}
+
+	ReactDOM.render(
+		<App />,
+		document.getElementById('app')
+	);
+})();
